@@ -222,14 +222,27 @@
         </div>
         <div class="row justify-content-center">
           <div class="col-md-6">
-            <form>
+            <div
+              class="alert alert-success alert-dismissible fade show d-none my-alert"
+              role="alert"
+            >
+              <strong>Terima kasih</strong> Pesan diterima
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="alert"
+                aria-label="Close"
+              ></button>
+            </div>
+            <form name="wpu-contact-form">
               <div class="mb-3">
                 <label for="name" class="form-label">Nama lengkap</label>
                 <input
                   type="text"
                   class="form-control"
-                  id="name"
+                  id="nama"
                   aria-describedby="Help"
+                  name="nama"
                 />
               </div>
               <div class="mb-3">
@@ -239,15 +252,36 @@
                   class="form-control"
                   id="Email"
                   aria-describedby="emailHelp"
+                  name="email"
                 />
               </div>
               <div class="mb-3">
                 <label for="exampleFormControlTextarea1" class="form-label"
                   >Pesan</label
                 >
-                <textarea class="form-control" id="Pesan" rows="3"></textarea>
+                <textarea
+                  class="form-control"
+                  id="pesan"
+                  rows="3"
+                  name="pesan"
+                ></textarea>
               </div>
-              <button type="submit" class="btn btn-success">Submit</button>
+              <button type="submit" class="btn btn-primary btn-kirim">
+                Submit
+              </button>
+
+              <button
+                class="btn btn-primary btn-loading d-none"
+                type="button"
+                disabled
+              >
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Loading...
+              </button>
             </form>
           </div>
         </div>
@@ -276,5 +310,30 @@
       integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
       crossorigin="anonymous"
     ></script>
+    <script>
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbwlaUq75csiG107c9HuLYdQC9xZAWdvx5RpPi7Tgz-qSxED0F2B1S6i2uBAizt2tP8HmA/exec";
+      const form = document.forms["wpu-contact-form"];
+      const btnKirim = document.querySelector(".btn-kirim");
+      const btnLoading = document.querySelector(".btn-loading");
+      const myAlert = document.querySelector(".my-alert");
+
+      form.addEventListener("submit", (e) => {
+        // ketika tombol dikirim
+        btnLoading.classList.toggle("d-none");
+        btnKirim.classList.toggle("d-none");
+        e.preventDefault();
+        fetch(scriptURL, { method: "POST", body: new FormData(form) })
+          .then((response) => {
+            // ketika tombol success
+            btnLoading.classList.toggle("d-none");
+            btnKirim.classList.toggle("d-none");
+            myAlert.classList.toggle("d-none");
+            form.reset();
+            console.log("Success!", response);
+          })
+          .catch((error) => console.error("Error!", error.message));
+      });
+    </script>
   </body>
 </html>
